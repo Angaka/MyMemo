@@ -1,3 +1,26 @@
 <resources>
-    <string name="app_name">MyMemo</string>
+    <string name="app_name">MyMemos</string>
+    <string name="memo">Memo</string>
+
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="last_modified">Last modified</string>
+
+    <string name="memo_saved">Memo saved !</string>
+
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="all_deleted">Memos all deleted</string>
+
+    <!-- Menu main -->
+    <string name="menu_delete_all">Delete all memo</string>
+    <string name="delete_all">Delete all memos</string>
+    <string name="confirm_delete_all">Are you sure to delete all memos ?</string>
+    <string name="menu_search">Search a memo</string>
+
+    <!-- Menu memo -->
+    <string name="menu_delete">Delete this memo</string>
+    <string name="menu_save">Save this memo</string>
+
+    <string name="empty_list">Empty memos list, get started !</string>
 </resources>

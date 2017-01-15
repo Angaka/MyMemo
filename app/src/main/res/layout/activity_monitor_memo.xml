@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tan.mymemo.MonitorMemoActivity">
+
+    <include
+        layout="@layout/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <View
+            android:id="@+id/view_color_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/memo_color_line_height"
+            android:background="@color/colorAccent"></View>
+
+        <EditText
+            android:id="@+id/edittext_title_memo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:hint="@string/title"
+            android:lines="1"
+            android:maxLines="1"
+            android:textSize="@dimen/memo_title_textsize"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textview_modified_date_memo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:hint="@string/last_modified"
+            android:textSize="@dimen/memo_desc_textsize" />
+
+        <EditText
+            android:id="@+id/edittext_desc_memo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:hint="@string/description"
+            android:textSize="@dimen/memo_desc_textsize"
+            android:lines="6"/>
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

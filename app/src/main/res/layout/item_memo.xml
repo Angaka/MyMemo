@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardview_memo"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/cardview_height"
+    android:layout_marginBottom="10dp"
+    android:orientation="vertical"
+    card_view:cardCornerRadius="@dimen/cardview_radius"
+    card_view:cardElevation="@dimen/cardview_elevation">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textview_modified_date_memo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:textSize="@dimen/memo_last_modified_textsize" />
+
+            <TextView
+                android:id="@+id/textview_title_memo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/memo_title_textsize"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textview_desc_memo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/memo_desc_textsize" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimary"></View>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <ImageButton
+                android:id="@+id/image_button_add_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:padding="@dimen/padding_icon"
+                android:src="@drawable/ic_add_list" />
+
+            <ImageButton
+                android:id="@+id/image_button_color_palette"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:padding="@dimen/padding_icon"
+                android:src="@drawable/ic_color_palette" />
+
+            <ImageButton
+                android:id="@+id/image_button_save"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:padding="@dimen/padding_icon"
+                android:src="@drawable/ic_menu_save"
+                android:visibility="gone" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>
