@@ -18,6 +18,7 @@ import com.enrico.colorpicker.colorDialog;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -52,7 +53,7 @@ public class MemoAdapter extends RecyclerView.Adapter<MemoAdapter.ViewHolder> {
         }
 
         public void bind(Context context, final Memo memo, final OnItemClickListener listener) {
-            cvMemo.setCardBackgroundColor(memo.getColor());
+            cvMemo.setBackgroundColor(memo.getColor());
 
             tvTitleMemo.setText(memo.getTitle());
             tvDescMemo.setText(memo.getDescription());
@@ -79,10 +80,22 @@ public class MemoAdapter extends RecyclerView.Adapter<MemoAdapter.ViewHolder> {
         void onItemClick(Memo memo);
     }
 
+    public MemoAdapter(Context context) {
+        this.memos = new ArrayList<>();
+        this.context = context;
+    }
+
     public MemoAdapter(Context context, List<Memo> memos, OnItemClickListener listener) {
         this.context = context;
         this.memos = memos;
         this.listener = listener;
+    }
+
+    public void setMemos(List<Memo> memos) {
+        this.memos.clear();
+        this.memos.addAll(memos);
+        System.out.println(" memeo " + memos.size());
+        this.notifyItemRangeChanged(0, memos.size());
     }
 
     @Override
@@ -98,5 +111,16 @@ public class MemoAdapter extends RecyclerView.Adapter<MemoAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return memos.size();
+    }
+
+    public void addMemo(int position, Memo memo) {
+        memos.add(position, memo);
+        notifyItemInserted(position);
+        notifyItemRangeChanged(position, memos.size());
+    }
+
+    public void removeMemos() {
+        memos.clear();
+        notifyDataSetChanged();
     }
 }

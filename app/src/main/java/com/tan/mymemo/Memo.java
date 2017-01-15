@@ -29,6 +29,8 @@ public class Memo {
         this.lastModified = lastModified;
     }
 
+    public Memo() {}
+
     public int getColor() {
         return color;
     }

@@ -8,9 +8,12 @@
 
     <string name="memo_saved">Memo saved !</string>
 
+    <string name="confirm">Confirm</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
     <string name="all_deleted">Memos all deleted</string>
+
+    <string name="please_put_title">Please put at least a title or a description to this memo !</string>
 
     <!-- Menu main -->
     <string name="menu_delete_all">Delete all memo</string>

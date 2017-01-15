@@ -4,9 +4,10 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="padding_icon">2dp</dimen>
-    <dimen name="memo_color_line_height">4dp</dimen>
-    
-    <dimen name="cardview_height">125dp</dimen>
+    <dimen name="memo_color_line_height">2dp</dimen>
+
+    <dimen name="cardview_height_dialog">250dp</dimen>
+    <dimen name="cardview_height">200dp</dimen>
     <dimen name="cardview_radius">2dp</dimen>
     <dimen name="cardview_elevation">2dp</dimen>
 
