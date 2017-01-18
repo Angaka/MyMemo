@@ -16,6 +16,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,9 +42,10 @@ public class MemoMonitor {
 
         File[] memosFiles = appRootDir.listFiles();
         List<Memo> memos = new ArrayList<>();
-        if (memosFiles.length > 0 ) {
+        if (memosFiles.length > 0) {
             for (File memosFile : memosFiles) {
                 String data = readFromFile(memosFile.getPath());
+                System.out.println(data);
                 Memo memo = new GsonBuilder().create().fromJson(data, Memo.class);
                 memos.add(memo);
             }
@@ -51,10 +54,15 @@ public class MemoMonitor {
         return memos;
     }
 
+    public File getMemoByFilename(String filename) {
+        File file = new File(context.getFilesDir(), MEMOS_FOLDER + filename);
+        return file;
+    }
+
     public boolean writeToFile(String path, String data) {
         try {
-            FileOutputStream fos = new FileOutputStream(new File(context.getFilesDir() + path + ".json"));
-
+            deleteMemoByFilename(path + ".json");
+            FileOutputStream fos = new FileOutputStream(new File(context.getFilesDir() + MEMOS_FOLDER + path + ".json"), false);
             byte[] contentInBytes = data.getBytes();
             fos.write(contentInBytes);
             fos.close();
@@ -96,15 +104,9 @@ public class MemoMonitor {
     }
 
     public void deleteMemoByFilename(String filename) {
-        File filesDirectory = new File(context.getFilesDir(), MEMOS_FOLDER + filename);
-        if (!filesDirectory.exists())
-            filesDirectory.mkdir();
-        File[] dirFiles = filesDirectory.listFiles();
-        for (File file : dirFiles) {
-            if (file.exists())  {
-                file.delete();
-            }
-        }
+        File file = new File(context.getFilesDir(), MEMOS_FOLDER + filename);
+        if (file.exists())
+            file.delete();
     }
 
     public void deleteAllMemos() {
@@ -113,7 +115,7 @@ public class MemoMonitor {
             filesDirectory.mkdir();
         File[] dirFiles = filesDirectory.listFiles();
         for (File file : dirFiles) {
-            if (file.exists())  {
+            if (file.exists()) {
                 file.delete();
             }
         }

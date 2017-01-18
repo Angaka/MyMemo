@@ -1,7 +1,6 @@
 package com.tan.mymemo;
 
 import android.app.SearchManager;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
@@ -10,6 +9,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -27,9 +27,10 @@ import com.enrico.colorpicker.colorDialog;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jude.easyrecyclerview.EasyRecyclerView;
+import com.rohit.recycleritemclicksupport.RecyclerItemClickSupport;
+import com.tan.mymemo.utils.ItemClickSupport;
 
-import org.parceler.Parcels;
-
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     Toolbar toolbar;
 
     @BindView(R.id.recycler_view_memo)
-    EasyRecyclerView rvMemo;
+    RecyclerView rvMemo;
 
     @BindView(R.id.fab_add_new_memo)
     FloatingActionButton fabAddNewMemo;
@@ -90,18 +91,116 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     public void initMemoList() {
         memos = memoMonitor.getMemos();
-        adapter = new MemoAdapter(this, memos, new MemoAdapter.OnItemClickListener() {
+        RecyclerItemClickSupport.addTo(rvMemo).setOnItemClickListener(new RecyclerItemClickSupport.OnItemClickListener() {
             @Override
-            public void onItemClick(Memo memo) {
-/*                Intent intent = new Intent(MainActivity.this, MonitorMemoActivity.class);
-                intent.putExtra(getString(R.string.memo), Parcels.wrap(memo));
-                startActivityForResult(intent, SAVE_MODIFIED_MEMO_REQUEST);*/
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+
+                final Memo memo = memos.get(position);
+
+                materialDialog = new MaterialDialog.Builder(MainActivity.this)
+                        .customView(R.layout.dialog_new_memo, true)
+                        .negativeText(R.string.cancel)
+                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                materialDialog.dismiss();
+                            }
+                        })
+                        .positiveText(R.string.confirm)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                                if (!isTitleEmpty || !isDescEmpty) {
+                                    MemoMonitor memoMonitor = new MemoMonitor(getApplicationContext());
+
+                                    Calendar c = Calendar.getInstance();
+                                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                                    String date = format.format(c.getTime());
+
+                                    Memo newMemo = new Memo(memo.getColor(),
+                                            etTitleMemo.getText().toString(),
+                                            etDescMemo.getText().toString(),
+                                            date);
+
+                                    Gson gson = new GsonBuilder().create();
+                                    System.out.println("date " + gson.toJson(newMemo));
+                                    File memoFile = memoMonitor.getMemoByFilename(memo.getLastModified());
+                                    System.out.println(memoFile.getPath());
+                                    if (memoMonitor.writeToFile(memo.getLastModified(), gson.toJson(newMemo))) {
+                                        System.out.println("size  " + memos.size());
+                                        memos = memoMonitor.getMemos();
+                                        adapter.setMemos(memos);
+                                        Toast.makeText(getApplicationContext(), getString(R.string.memo_saved), Toast.LENGTH_LONG).show();
+                                    }
+                                } else {
+                                    Toast.makeText(getApplicationContext(), getString(R.string.please_put_title), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        })
+                        .show();
+
+                ImageButton imgBtnColorPalette = (ImageButton) materialDialog.getCustomView().findViewById(R.id.image_button_color_palette);
+
+                imgBtnColorPalette.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        System.out.println("test");
+                        colorDialog.showColorPicker(MainActivity.this, 1);
+                    }
+                });
+
+                etTitleMemo = (EditText) materialDialog.getCustomView().findViewById(R.id.edittext_title_memo);
+                etTitleMemo.setText(memo.getTitle());
+                etTitleMemo.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        if (editable.length() > 0)
+                            isTitleEmpty = false;
+                        else
+                            isTitleEmpty = true;
+                    }
+                });
+
+                etDescMemo = (EditText) materialDialog.getCustomView().findViewById(R.id.edittext_desc_memo);
+                etDescMemo.setText(memo.getDescription());
+                etDescMemo.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        if (editable.length() > 0)
+                            isDescEmpty = false;
+                        else
+                            isDescEmpty = true;
+                    }
+                });
             }
         });
+
+        adapter = new MemoAdapter(this, memos);
         rvMemo.setAdapter(adapter);
         rvMemo.setLayoutManager(new GridLayoutManager(this, 2));
-        if (memos.isEmpty())
-           rvMemo.showEmpty();
+/*        if (memos.isEmpty())
+            rvMemo.showEmpty();*/
     }
 
     @Override
@@ -152,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
                             Gson gson = new GsonBuilder().create();
                             System.out.println("date " + gson.toJson(memo));
-                            if (memoMonitor.writeToFile(MemoMonitor.MEMOS_FOLDER + date, gson.toJson(memo))) {
+                            if (memoMonitor.writeToFile(date, gson.toJson(memo))) {
                                 System.out.println("size  " + memos.size());
                                 memos = memoMonitor.getMemos();
                                 adapter.setMemos(memos);
@@ -216,8 +315,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     isDescEmpty = true;
             }
         });
-
-
     }
 
     @Override

@@ -31,8 +31,6 @@ import butterknife.ButterKnife;
 
 public class MemoAdapter extends RecyclerView.Adapter<MemoAdapter.ViewHolder> {
 
-    private OnItemClickListener listener;
-
     private Context     context;
     private List<Memo>  memos;
 
@@ -51,29 +49,6 @@ public class MemoAdapter extends RecyclerView.Adapter<MemoAdapter.ViewHolder> {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-
-        public void bind(Context context, final Memo memo, final OnItemClickListener listener) {
-            cvMemo.setBackgroundColor(memo.getColor());
-
-            tvTitleMemo.setText(memo.getTitle());
-            tvDescMemo.setText(memo.getDescription());
-
-            String lastModified = memo.getLastModified();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ");
-            try {
-                Date date = dateFormat.parse(lastModified);
-                tvModifiedDateMemo.setText("Last modified " + date.toString());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    listener.onItemClick(memo);
-                }
-            });
-        }
     }
 
     public interface OnItemClickListener {
@@ -85,10 +60,9 @@ public class MemoAdapter extends RecyclerView.Adapter<MemoAdapter.ViewHolder> {
         this.context = context;
     }
 
-    public MemoAdapter(Context context, List<Memo> memos, OnItemClickListener listener) {
+    public MemoAdapter(Context context, List<Memo> memos) {
         this.context = context;
         this.memos = memos;
-        this.listener = listener;
     }
 
     public void setMemos(List<Memo> memos) {
@@ -105,7 +79,20 @@ public class MemoAdapter extends RecyclerView.Adapter<MemoAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.bind(context, memos.get(position), listener);
+        Memo memo = memos.get(position);
+/*
+        holder.cvMemo.setBackgroundColor(memo.getColor());
+        holder.tvTitleMemo.setText(memo.getTitle());
+        holder.tvDescMemo.setText(memo.getDescription());
+
+        String lastModified = memo.getLastModified();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ");
+        try {
+            Date date = dateFormat.parse(lastModified);
+            holder.tvModifiedDateMemo.setText("Last modified " + date.toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }*/
     }
 
     @Override
@@ -116,6 +103,12 @@ public class MemoAdapter extends RecyclerView.Adapter<MemoAdapter.ViewHolder> {
     public void addMemo(int position, Memo memo) {
         memos.add(position, memo);
         notifyItemInserted(position);
+        notifyItemRangeChanged(position, memos.size());
+    }
+
+    public void updateMemo(int position, Memo memo) {
+        memos.add(position, memo);
+        notifyItemChanged(position);
         notifyItemRangeChanged(position, memos.size());
     }
 
