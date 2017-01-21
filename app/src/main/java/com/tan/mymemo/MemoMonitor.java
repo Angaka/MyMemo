@@ -28,6 +28,7 @@ import java.util.List;
 public class MemoMonitor {
 
     static final String MEMOS_FOLDER = "/memos/";
+    static final String MEMO = "memo";
     private Context context;
 
     public MemoMonitor(Context context) {
@@ -45,18 +46,13 @@ public class MemoMonitor {
         if (memosFiles.length > 0) {
             for (File memosFile : memosFiles) {
                 String data = readFromFile(memosFile.getPath());
-                System.out.println(data);
+                System.out.println( memosFile.getPath() + " " + data);
                 Memo memo = new GsonBuilder().create().fromJson(data, Memo.class);
                 memos.add(memo);
             }
         }
 
         return memos;
-    }
-
-    public File getMemoByFilename(String filename) {
-        File file = new File(context.getFilesDir(), MEMOS_FOLDER + filename);
-        return file;
     }
 
     public boolean writeToFile(String path, String data) {
@@ -104,9 +100,10 @@ public class MemoMonitor {
     }
 
     public void deleteMemoByFilename(String filename) {
-        File file = new File(context.getFilesDir(), MEMOS_FOLDER + filename);
-        if (file.exists())
+        File file = new File(context.getFilesDir(), MEMOS_FOLDER + filename + ".json");
+        if (file.exists()) {
             file.delete();
+        }
     }
 
     public void deleteAllMemos() {

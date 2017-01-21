@@ -42,8 +42,6 @@ public class MemoAdapter extends RecyclerView.Adapter<MemoAdapter.ViewHolder> {
         TextView tvTitleMemo;
         @BindView(R.id.textview_desc_memo)
         TextView tvDescMemo;
-        @BindView(R.id.textview_modified_date_memo)
-        TextView tvModifiedDateMemo;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -70,6 +68,7 @@ public class MemoAdapter extends RecyclerView.Adapter<MemoAdapter.ViewHolder> {
         this.memos.addAll(memos);
         System.out.println(" memeo " + memos.size());
         this.notifyItemRangeChanged(0, memos.size());
+        this.notifyDataSetChanged();
     }
 
     @Override
@@ -80,36 +79,15 @@ public class MemoAdapter extends RecyclerView.Adapter<MemoAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Memo memo = memos.get(position);
-/*
+
         holder.cvMemo.setBackgroundColor(memo.getColor());
         holder.tvTitleMemo.setText(memo.getTitle());
         holder.tvDescMemo.setText(memo.getDescription());
-
-        String lastModified = memo.getLastModified();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ");
-        try {
-            Date date = dateFormat.parse(lastModified);
-            holder.tvModifiedDateMemo.setText("Last modified " + date.toString());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }*/
     }
 
     @Override
     public int getItemCount() {
         return memos.size();
-    }
-
-    public void addMemo(int position, Memo memo) {
-        memos.add(position, memo);
-        notifyItemInserted(position);
-        notifyItemRangeChanged(position, memos.size());
-    }
-
-    public void updateMemo(int position, Memo memo) {
-        memos.add(position, memo);
-        notifyItemChanged(position);
-        notifyItemRangeChanged(position, memos.size());
     }
 
     public void removeMemos() {

@@ -11,7 +11,7 @@
     <dimen name="cardview_radius">2dp</dimen>
     <dimen name="cardview_elevation">2dp</dimen>
 
-    <dimen name="memo_title_textsize">18sp</dimen>
-    <dimen name="memo_desc_textsize">14sp</dimen>
-    <dimen name="memo_last_modified_textsize">10sp</dimen>
+    <dimen name="memo_title_textsize">20sp</dimen>
+    <dimen name="memo_desc_textsize">16sp</dimen>
+    <dimen name="memo_last_modified_textsize">13sp</dimen>
 </resources>

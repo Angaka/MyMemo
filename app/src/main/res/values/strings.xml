@@ -7,6 +7,7 @@
     <string name="last_modified">Last modified</string>
 
     <string name="memo_saved">Memo saved !</string>
+    <string name="memo_failed">Memo saving failed !</string>
 
     <string name="confirm">Confirm</string>
     <string name="delete">Delete</string>
@@ -22,6 +23,8 @@
     <string name="menu_search">Search a memo</string>
 
     <!-- Menu memo -->
+    <string name="save_this_memo">Do you want to save this memo ?</string>
+    <string name="delete_this_memo">Are you sure to delete this memo ?</string>
     <string name="menu_delete">Delete this memo</string>
     <string name="menu_save">Save this memo</string>
 

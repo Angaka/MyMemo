@@ -12,6 +12,8 @@ import org.parceler.ParcelConstructor;
 @Parcel
 public class Memo {
 
+    @SerializedName("filename")
+    private String fileName;
     @SerializedName("color")
     private int color;
     @SerializedName("title")
@@ -22,7 +24,8 @@ public class Memo {
     private String lastModified;
 
     @ParcelConstructor
-    public Memo(int color, String title, String description, String lastModified) {
+    public Memo(String fileName, int color, String title, String description, String lastModified) {
+        this.fileName = fileName;
         this.color = color;
         this.title = title;
         this.description = description;
@@ -30,6 +33,14 @@ public class Memo {
     }
 
     public Memo() {}
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
     public int getColor() {
         return color;
