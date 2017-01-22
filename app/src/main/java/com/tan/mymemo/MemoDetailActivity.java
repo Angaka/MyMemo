@@ -65,11 +65,14 @@ public class MemoDetailActivity extends AppCompatActivity implements colorDialog
         memoMonitor = new MemoMonitor(this);
         memo = Parcels.unwrap(getIntent().getParcelableExtra(MemoMonitor.MEMO));
         if (memo != null) {
+            getSupportActionBar().setTitle(getString(R.string.update_memo));
             color = memo.getColor();
             layoutMemo.setBackgroundColor(color);
             etTitleMemo.setText(memo.getTitle());
             etDescMemo.setText(memo.getDescription());
             tvModifiedDateMemo.setText("Modified date : " + memo.getLastModified());
+        } else {
+            getSupportActionBar().setTitle(getString(R.string.new_memo));
         }
     }
 

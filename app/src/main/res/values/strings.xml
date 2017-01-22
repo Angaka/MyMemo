@@ -17,6 +17,8 @@
     <string name="please_put_title">Please put at least a title or a description to this memo !</string>
 
     <!-- Memo Detail -->
+    <string name="new_memo">New memo</string>
+    <string name="update_memo">Update memo</string>
     <string name="save_memo">Save memo</string>
     <string name="save_this_memo_and_quit">Do you want to save this memo and quit ?</string>
     <string name="save_and_quit">Save and quit</string>

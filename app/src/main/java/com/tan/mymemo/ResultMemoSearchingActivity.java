@@ -94,6 +94,8 @@ public class ResultMemoSearchingActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         switch (id) {
+            case R.id.home:
+                onBackPressed();
             case R.id.menu_delete_all:
                 final ColorDialog dialog = new ColorDialog(this);
                 dialog.setTitle(getString(R.string.delete_all));

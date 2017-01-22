@@ -188,7 +188,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         List<Memo> memosResult = new ArrayList<>();
         for (Memo memo : memos) {
-            if (memo.getTitle().contains(query) || memo.getDescription().contains(query)) {
+            if (memo.getTitle().toLowerCase().contains(query.toLowerCase())
+                    || memo.getDescription().toLowerCase().contains(query.toLowerCase())) {
                 memosResult.add(memo);
             }
         }
