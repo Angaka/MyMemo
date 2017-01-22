@@ -16,7 +16,16 @@
 
     <string name="please_put_title">Please put at least a title or a description to this memo !</string>
 
+    <!-- Memo Detail -->
+    <string name="save_memo">Save memo</string>
+    <string name="save_this_memo_and_quit">Do you want to save this memo and quit ?</string>
+    <string name="save_and_quit">Save and quit</string>
+    <string name="just_quit">Just quit</string>
+    <string name="discard_memo">Discard memo</string>
+    <string name="discard_this_memo">Do you want to discard this memo ?</string>
+
     <!-- Menu main -->
+    <string name="search_hint">Search a title or a description</string>
     <string name="menu_delete_all">Delete all memo</string>
     <string name="delete_all">Delete all memos</string>
     <string name="confirm_delete_all">Are you sure to delete all memos ?</string>

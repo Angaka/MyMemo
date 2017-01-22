@@ -1,25 +1,14 @@
 package com.tan.mymemo;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.enrico.colorpicker.colorDialog;
-
-import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -68,6 +57,30 @@ public class MemoAdapter extends RecyclerView.Adapter<MemoAdapter.ViewHolder> {
         this.memos.addAll(memos);
         System.out.println(" memeo " + memos.size());
         this.notifyItemRangeChanged(0, memos.size());
+        this.notifyDataSetChanged();
+    }
+
+    public void removeMemoByFileName(String fileName) {
+        for (int i = 0; i < this.memos.size(); i++) {
+            Memo memo = memos.get(i);
+            if (memo.getFileName().equals(fileName)) {
+                memos.remove(i);
+            }
+        }
+        this.notifyItemRangeChanged(0, memos.size());
+        this.notifyDataSetChanged();
+    }
+
+    public void updateMemo(Memo updatedMemo) {
+        for (int i = 0; i < this.memos.size(); i++) {
+            Memo memo = memos.get(i);
+            if (memo.getFileName().equals(updatedMemo.getFileName())) {
+                memo.setTitle(updatedMemo.getTitle());
+                memo.setDescription(updatedMemo.getDescription());
+                memo.setColor(updatedMemo.getColor());
+                memo.setLastModified(updatedMemo.getLastModified());
+            }
+        }
         this.notifyDataSetChanged();
     }
 

@@ -1,32 +1,21 @@
 package com.tan.mymemo;
 
-import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.enrico.colorpicker.colorDialog;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import org.parceler.Parcels;
-import org.parceler.transfuse.annotations.Bind;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -34,6 +23,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.refactor.lib.colordialog.ColorDialog;
+
+import static com.tan.mymemo.MemoMonitor.MEMO;
+import static com.tan.mymemo.MemoMonitor.MEMO_CANCELED;
+import static com.tan.mymemo.MemoMonitor.MEMO_DELETED;
+import static com.tan.mymemo.MemoMonitor.MEMO_SAVED;
 
 /**
  * Created by oudong on 20/01/2017.
@@ -111,7 +105,7 @@ public class MemoDetailActivity extends AppCompatActivity implements colorDialog
                     memo.setLastModified(date);
                 }
                 returnIntent.putExtra(MemoMonitor.MEMO, Parcels.wrap(memo));
-                setResult(RESULT_OK, returnIntent);
+                setResult(MEMO_SAVED, returnIntent);
                 finish();
                 break;
             case R.id.menu_delete:
@@ -122,10 +116,12 @@ public class MemoDetailActivity extends AppCompatActivity implements colorDialog
                     @Override
                     public void onClick(ColorDialog colorDialog) {
                         if (memo != null) {
-                            dialog.dismiss();
-                            memoMonitor.deleteMemoByFilename(memo.getFileName());
-                            setResult(RESULT_CANCELED);
+                            Intent returnIntent = new Intent();
+
+                            returnIntent.putExtra(MEMO, Parcels.wrap(memo));
+                            setResult(MEMO_DELETED, returnIntent);
                         }
+                        dialog.dismiss();
                         finish();
                     }
                 });
@@ -149,8 +145,59 @@ public class MemoDetailActivity extends AppCompatActivity implements colorDialog
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (memo != null) {
+            final ColorDialog dialog = new ColorDialog(this);
+            dialog.setTitle(getString(R.string.save_memo));
+            dialog.setContentText(getString(R.string.save_this_memo_and_quit));
+            dialog.setPositiveListener(getString(R.string.save_and_quit), new ColorDialog.OnPositiveListener() {
+                @Override
+                public void onClick(ColorDialog colorDialog) {
+                    Intent returnIntent = new Intent();
+
+                    Calendar c = Calendar.getInstance();
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String date = format.format(c.getTime());
+
+                    memo.setColor(color);
+                    memo.setTitle(etTitleMemo.getText().toString());
+                    memo.setDescription(etDescMemo.getText().toString());
+                    memo.setLastModified(date);
+                    returnIntent.putExtra(MemoMonitor.MEMO, Parcels.wrap(memo));
+                    setResult(MEMO_SAVED, returnIntent);
+
+                    dialog.dismiss();
+                    MemoDetailActivity.super.onBackPressed();
+                }
+            });
+            dialog.setNegativeListener(getString(R.string.just_quit), new ColorDialog.OnNegativeListener() {
+                @Override
+                public void onClick(ColorDialog colorDialog) {
+                    dialog.dismiss();
+                    setResult(MEMO_CANCELED);
+                    MemoDetailActivity.super.onBackPressed();
+                }
+            }).show();
+        } else {
+            final ColorDialog dialog = new ColorDialog(this);
+            dialog.setTitle(getString(R.string.discard_memo));
+            dialog.setContentText(getString(R.string.discard_this_memo));
+            dialog.setPositiveListener(getString(R.string.confirm), new ColorDialog.OnPositiveListener() {
+                @Override
+                public void onClick(ColorDialog colorDialog) {
+                    dialog.dismiss();
+                    setResult(MEMO_CANCELED);
+                    MemoDetailActivity.super.onBackPressed();
+                }
+            });
+            dialog.setNegativeListener(getString(R.string.cancel), new ColorDialog.OnNegativeListener() {
+                @Override
+                public void onClick(ColorDialog colorDialog) {
+                    dialog.dismiss();
+                }
+            }).show();
+        }
     }
+
 
     @Override
     public void onColorSelection(DialogFragment dialogFragment, @ColorInt int selectedColor) {

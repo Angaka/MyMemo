@@ -1,13 +1,8 @@
 package com.tan.mymemo;
 
 import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.GsonBuilder;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,8 +11,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +22,10 @@ public class MemoMonitor {
 
     static final String MEMOS_FOLDER = "/memos/";
     static final String MEMO = "memo";
+    static final int MEMO_SAVED = 0;
+    static final int MEMO_DELETED = 1;
+    static final int MEMO_CANCELED = 2;
+
     private Context context;
 
     public MemoMonitor(Context context) {
@@ -62,8 +59,6 @@ public class MemoMonitor {
             byte[] contentInBytes = data.getBytes();
             fos.write(contentInBytes);
             fos.close();
-            Toast.makeText(context, "File " + context.getFilesDir() + path, Toast.LENGTH_LONG).show();
-
             return true;
         } catch (FileNotFoundException e) {
             e.printStackTrace();

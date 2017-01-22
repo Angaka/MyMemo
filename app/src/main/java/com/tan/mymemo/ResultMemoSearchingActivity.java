@@ -3,7 +3,6 @@ package com.tan.mymemo;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -21,12 +20,10 @@ import com.rohit.recycleritemclicksupport.RecyclerItemClickSupport;
 
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import cn.refactor.lib.colordialog.ColorDialog;
 
 import static com.tan.mymemo.MemoMonitor.MEMO;
@@ -34,18 +31,18 @@ import static com.tan.mymemo.MemoMonitor.MEMO_CANCELED;
 import static com.tan.mymemo.MemoMonitor.MEMO_DELETED;
 import static com.tan.mymemo.MemoMonitor.MEMO_SAVED;
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+/**
+ * Created by oudong on 22/01/2017.
+ */
 
+public class ResultMemoSearchingActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.recycler_view_memo)
     RecyclerView rvMemo;
-    @BindView(R.id.fab_add_new_memo)
-    FloatingActionButton fabAddNewMemo;
 
     static final String QUERY = "query";
     static final int MEMO_DETAIL = 0;
-    static final int MEMO_RESULT = 1;
 
     private List<Memo> memos;
     private MemoAdapter adapter;
@@ -55,27 +52,29 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_result_memo_searching);
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         memoMonitor = new MemoMonitor(this);
 
+        getSupportActionBar().setTitle("Results for : " + getIntent().getStringExtra(QUERY));
         initMemoList();
     }
 
     public void initMemoList() {
-        memos = memoMonitor.getMemos();
+        memos = Parcels.unwrap(getIntent().getParcelableExtra(MemoMonitor.MEMO));
         RecyclerItemClickSupport.addTo(rvMemo).setOnItemClickListener(new RecyclerItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
 
                 final Memo memo = memos.get(position);
-                Intent intent = new Intent(MainActivity.this, MemoDetailActivity.class);
+                Intent intent = new Intent(ResultMemoSearchingActivity.this, MemoDetailActivity.class);
 
-                intent.putExtra(MemoMonitor.MEMO, Parcels.wrap(memo));
+                intent.putExtra(MEMO, Parcels.wrap(memo));
                 startActivityForResult(intent, MEMO_DETAIL);
             }
         });
@@ -85,20 +84,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         rvMemo.setLayoutManager(new GridLayoutManager(this, 2));
     }
 
-    @OnClick(R.id.fab_add_new_memo)
-    public void addNewMemo() {
-        Intent intent = new Intent(MainActivity.this, MemoDetailActivity.class);
-        startActivityForResult(intent, MEMO_DETAIL);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setOnQueryTextListener(this);
         return true;
     }
 
@@ -149,15 +136,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 case MEMO_SAVED:
                     memo = Parcels.unwrap(data.getParcelableExtra(MemoMonitor.MEMO));
                     if (memoMonitor.writeToFile(memo.getFileName(), gson.toJson(memo))) {
-                        memos = memoMonitor.getMemos();
-                        adapter.setMemos(memos);
+                        adapter.updateMemo(memo);
                         Toast.makeText(getApplicationContext(), getString(R.string.memo_saved), Toast.LENGTH_LONG).show();
                     } else
                         Toast.makeText(getApplicationContext(), getString(R.string.memo_failed), Toast.LENGTH_LONG).show();
                     break;
                 case MEMO_CANCELED:
-                    memos = memoMonitor.getMemos();
-                    adapter.setMemos(memos);
                     break;
                 case MEMO_DELETED:
                     Memo deletedMemo = Parcels.unwrap(data.getParcelableExtra(MEMO));
@@ -169,38 +153,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     break;
             }
         }
-        if (requestCode == MEMO_RESULT) {
-            switch (resultCode) {
-                case MEMO_CANCELED:
-                    memos = memoMonitor.getMemos();
-                    adapter.setMemos(memos);
-                    break;
-
-                default:
-                    break;
-            }
-        }
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
-        Intent intent = new Intent(MainActivity.this, ResultMemoSearchingActivity.class);
-
-        List<Memo> memosResult = new ArrayList<>();
-        for (Memo memo : memos) {
-            if (memo.getTitle().contains(query) || memo.getDescription().contains(query)) {
-                memosResult.add(memo);
-            }
-        }
-        intent.putExtra(QUERY, query);
-        intent.putExtra(MemoMonitor.MEMO, Parcels.wrap(memosResult));
-        startActivityForResult(intent, MEMO_RESULT);
-        return false;
+    public void onBackPressed() {
+        setResult(MEMO_CANCELED);
+        super.onBackPressed();
     }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        return false;
-    }
-
 }
